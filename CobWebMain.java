@@ -435,7 +435,7 @@ public class CobWebMain {
 			for(int i=0; i<root.getNInstances(); i++){
 				graph.addEdge(root.getLabel() + " - " + root.getInstances().get(i).getName(), root.getLabel(), root.getInstances().get(i).getName());
 				if(root.getInstances().get(i).isConstrained()){
-					System.out.println("Marking Constrained");
+					//System.out.println("Marking Constrained");
 					graph.getNode(root.getInstances().get(i).getName()).setAttribute("ui.class", "constrained");
 				}
 				else{

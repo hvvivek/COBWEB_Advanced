@@ -290,10 +290,31 @@ public class CobWebAlgoWithConstraints {
 								}
 							}
 							else{
-								System.out.println("Is " + object.getName() + " close to 1. " + resultNode.getInstanceNames().get(0) + " or 2. " + secondBestChoice.sample() + "?");
+								
+								/////////////////////////////////////////////////
+								String secondSample = secondBestChoice.sample();
+								String rootSample =  resultNode.sample();
+								if(secondSample.equals(rootSample)){
+									if(resultNode.getNInstances()>1){
+										while(rootSample.equals(secondSample)){
+											rootSample = resultNode.sample();
+										}
+									}
+									else if(secondBestChoice.getNInstances()>1){
+										while(rootSample.equals(secondSample)){
+											secondSample = secondBestChoice.sample();
+										}
+									}
+								}
+								//////////////////////////////////////////////////
+								
+								System.out.println("Is " + object.getName() + " close to 1. " + rootSample + " or 2. " + secondSample + "?");
 								if(reader.nextLine().equals("2")){
 									constraintAdded = true;
-									String[] constraintString = {"R", object.getName(), secondBestChoice.sample(), resultNode.sample()};
+									
+									
+									
+									String[] constraintString = {"R", object.getName(), secondSample, rootSample};
 									Constraint newConstraint = new Constraint(CobWebMain.constraints.size(), constraintString);
 									CobWebMain.constraints.add(newConstraint);
 									CobWebMain.enforcedConstraints.add(newConstraint);
@@ -310,14 +331,13 @@ public class CobWebAlgoWithConstraints {
 							Math.abs(result - CobWebCaseValues[3])>0  && 
 							CobWebCaseValues[3]>0 && 
 							bestSplitNode.getNInstances()>0
+							&& (resultNode.getNInstances()>1 || bestSplitNode.getNInstances()>1)
 							)
 					{
-							System.out.println("CU Close between result and Split Child " + result + " - " + CobWebCaseValues[3] + " =  "+ Math.abs(result - CobWebCaseValues[3]));
+							System.out.println("CU Close between result and Split Child " + result + " - " + CobWebCaseValues[3] );
 							if(CobWebMain.labelMode){
 								System.out.println("Is " + object.getName() + " close to 1. " + resultNode.getLabel() + " or 2. " + bestSplitNode.getLabel() + "?");
 								if(reader.nextLine().equals("2")){
-
-									System.out.println("Debug: Here");
 									constraintAdded = true;
 									String[] constraintString = {"R", object.getName(), bestSplitNode.sample(), resultNode.sample()};
 									Constraint newConstraint = new Constraint(CobWebMain.constraints.size(), constraintString);
@@ -329,11 +349,30 @@ public class CobWebAlgoWithConstraints {
 								}
 							}
 							else{
-								System.out.println("Is " + object.getName() + " close to 1. " + resultNode.getInstanceNames().get(0) + " or 2. " + bestSplitNode.sample(resultNode.getInstanceNames().get(0)) + "?");
+
+								/////////////////////////////////////////////////
+								String secondSample = bestSplitNode.sample();
+								String rootSample =  resultNode.sample();
+								if(secondSample.equals(rootSample)){
+									if(resultNode.getNInstances()>1){
+										while(rootSample.equals(secondSample)){
+											rootSample = resultNode.sample();
+										}
+									}
+									else if(bestSplitNode.getNInstances()>1){
+										while(rootSample.equals(secondSample)){
+											secondSample = bestSplitNode.sample();
+										}
+									}
+								}
+								
+								//////////////////////////////////////////////////
+								
+								System.out.println("Is " + object.getName() + " close to 1. " + rootSample + " or 2. " + secondSample + "?");
 								if(reader.nextLine().equals("2")){
 									System.out.println("Debug: Here");
 									constraintAdded = true;
-									String[] constraintString = {"R", object.getName(), bestSplitNode.sample(), resultNode.sample()};
+									String[] constraintString = {"R", object.getName(), secondSample, rootSample};
 									Constraint newConstraint = new Constraint(CobWebMain.constraints.size(), constraintString);
 									CobWebMain.constraints.add(newConstraint);
 									CobWebMain.enforcedConstraints.add(newConstraint);
@@ -700,7 +739,7 @@ public class CobWebAlgoWithConstraints {
 				if(		Math.abs(result - CobWebCaseValues[3])<threshold && 
 						Math.abs(result - CobWebCaseValues[3])>0  && 
 						CobWebCaseValues[3]>0 && 
-						bestSplitNode.getNInstances()>0
+						bestSplitNode.getNInstances()>1
 						)
 				{
 						System.out.println("CU Close between result and Split Child " + result + " - " + CobWebCaseValues[3] + " =  "+ Math.abs(result - CobWebCaseValues[3]));
@@ -717,10 +756,29 @@ public class CobWebAlgoWithConstraints {
 							}
 						}
 						else{
-							System.out.println("Is " + object.getName() + " close to 1. " + resultNode.getInstanceNames().get(0) + " or 2. " + bestSplitNode.sample(resultNode.getInstanceNames().get(0)) + "?");
+								/////////////////////////////////////////////////
+								String secondSample = bestSplitNode.sample();
+								String rootSample =  resultNode.sample();
+								if(secondSample.equals(rootSample)){
+									if(resultNode.getNInstances()>1){
+										while(rootSample.equals(secondSample)){
+											rootSample = resultNode.sample();
+										}
+									}
+									else if(bestSplitNode.getNInstances()>1){
+										while(rootSample.equals(secondSample)){
+											secondSample = bestSplitNode.sample();
+										}
+									}
+								}
+								
+								//////////////////////////////////////////////////
+			
+							System.out.println("Is " + object.getName() + " close to 1. " + rootSample + " or 2. " + secondSample + "?");
+			
 							if(reader.nextLine().equals("2")){
 								constraintAdded = true;
-								String[] constraintString = {"R", object.getName(), bestSplitNode.sample(), resultNode.sample()};
+								String[] constraintString = {"R", object.getName(), secondSample, rootSample};
 								Constraint newConstraint = new Constraint(CobWebMain.constraints.size(), constraintString);
 								CobWebMain.constraints.add(newConstraint);
 								CobWebMain.enforcedConstraints.add(newConstraint);
