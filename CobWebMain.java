@@ -20,6 +20,10 @@ public class CobWebMain {
 	static 			int 						correctLabel 				= 0;
 	
 	static			double[] 					weights 					= null;
+	static			int[]						categoriesLevel1			= new int[101];
+	static			int[]						categoriesLevel2			= new int[101];
+	static			int[]						categoriesLevel3			= new int[101];
+	static			int[]						categoriesLevel4			= new int[101];
 	
 	static 			Graph 						graph						= null;
 	
@@ -37,7 +41,8 @@ public class CobWebMain {
 
 	static 			String 						styleSheet 					=
 																		        "node {" +
-																		        "	fill-color: black;" +"}" +
+																		        "	fill-color: black;"
+																		        + 	"text-size: 18;" +"}" +
 																		        "node.marked {" +
 																		        "	fill-color: red;" +
 																		        "}"+
@@ -125,13 +130,16 @@ public class CobWebMain {
 			while(reader.hasNext()){
 				Constraint tempConstraint = null;
 				String constraintString = reader.nextLine();
+				System.out.println("constraintString: " + constraintString);
 				if(constraintString.contains(",")){
-					tempConstraint = new Constraint(count, reader.nextLine().split(","));
+					tempConstraint = new Constraint(count, constraintString.split(","));
 				}
 				else{
-					tempConstraint = new Constraint(count, reader.nextLine().split("//s+"));
+					tempConstraint = new Constraint(count, constraintString.split("//s+"));
 				}
-				CobWebMain.getInstanceByName(tempConstraint.getObject(), root).setConstrained(true);
+				//CobWebMain.getInstanceByName(tempConstraint.getObject(), root).setConstrained(true);
+				CobWebMain.getInstanceByName(tempConstraint.getObject(), instances).setConstrained(true);
+
 				CobWebMain.addConstraintToList(tempConstraint);
 				count++;
 			}
@@ -230,6 +238,11 @@ public class CobWebMain {
 				
 				//Refresh Graph
 				CobWebMain.refreshGraph(root);
+				CobWebMain.countLevel1(root, instance);
+				CobWebMain.countLevel2(root, instance);
+				CobWebMain.countLevel3(root, instance);
+				CobWebMain.countLevel4(root, instance);
+				
 				for(org.graphstream.graph.Node node: graph.getNodeSet()){
 					node.setAttribute("ui.label", node.getId());
 				}
@@ -244,8 +257,73 @@ public class CobWebMain {
 			
 			System.out.println();
 			printLevel(root, 4, 0);
+			
+			System.out.println(Arrays.toString(categoriesLevel1));
+			System.out.println(Arrays.toString(categoriesLevel2));
+			System.out.println(Arrays.toString(categoriesLevel3));
+			System.out.println(Arrays.toString(categoriesLevel4));
 	}
 	
+	private static Instance getInstanceByName(String object, ArrayList<Instance> root) {
+		Instance I = null;
+		System.out.println(object);
+		for(int i=0; i<root.size(); i++){
+			System.out.println(root.get(i).getName() + " - " + object);
+			if(root.get(i).getName().equals(object)){
+				I = root.get(i);
+			}
+		}
+		return I;
+	}
+
+	private static void countLevel1(Node root, int instance) {
+		// TODO Auto-generated method stub
+		if(root.getLevel() == 1){
+			categoriesLevel1[instance] = categoriesLevel1[instance]+1;
+		}
+		else if(root.getNChildren()>0){
+			for(int i=0; i<root.getNChildren(); i++){
+				countLevel1(root.getChildren().get(i), instance);
+			}
+		}
+	}
+	
+	private static void countLevel2(Node root, int instance) {
+		// TODO Auto-generated method stub
+		if(root.getLevel() == 2){
+			categoriesLevel2[instance] = categoriesLevel2[instance]+1;
+		}
+		else if(root.getNChildren()>0){
+			for(int i=0; i<root.getNChildren(); i++){
+				countLevel2(root.getChildren().get(i), instance);
+			}
+		}
+	}
+	
+	private static void countLevel3(Node root, int instance) {
+		// TODO Auto-generated method stub
+		if(root.getLevel() == 3){
+			categoriesLevel3[instance] = categoriesLevel3[instance]+1;
+		}
+		else if(root.getNChildren()>0){
+			for(int i=0; i<root.getNChildren(); i++){
+				countLevel3(root.getChildren().get(i), instance);
+			}
+		}
+	}
+	
+	private static void countLevel4(Node root, int instance) {
+		// TODO Auto-generated method stub
+		if(root.getLevel() == 4){
+			categoriesLevel4[instance] = categoriesLevel4[instance]+1;
+		}
+		else if(root.getNChildren()>0){
+			for(int i=0; i<root.getNChildren(); i++){
+				countLevel4(root.getChildren().get(i), instance);
+			}
+		}
+	}
+
 	private static void refreshGraph(Node root) {
 		//Redraw Graph
 		root.setLabel("Root");
@@ -299,6 +377,13 @@ public class CobWebMain {
 		graph.setAutoCreate(true);
 		graph.addAttribute("ui.stylesheet", styleSheet);
 		graph.display();
+		
+		for(int i=0; i<101; i++){
+			categoriesLevel1[i] = 0;
+			categoriesLevel2[i] = 0;
+			categoriesLevel3[i] = 0;
+			categoriesLevel4[i] = 0;
+		}
 
 	}
 
@@ -324,8 +409,14 @@ public class CobWebMain {
 
 	private static void printLevel(Node root, int noOfLevels, int currentLevel) {
 		// TODO Auto-generated method stub
-		System.out.println("Level " + currentLevel + ": " + root.getNInstances());
+		//System.out.println("Level " + currentLevel + ": " + root.getNInstances());
+		
 		if(currentLevel != noOfLevels){
+			System.out.println("Node:");
+			for(int i=0; i<root.getNInstances(); i++){
+				root.getInstances().get(i).printInstance();
+			}
+			System.out.println();
 			for(int i=0; i<root.getNChildren(); i++){
 				if(root.getChildren().get(i).getNChildren()>0){
 					printLevel(root.getChildren().get(i), noOfLevels, currentLevel+1);	
@@ -336,7 +427,8 @@ public class CobWebMain {
 			}
 		}
 		if(currentLevel == noOfLevels){
-			System.out.println("Category:");
+			//System.out.println("Category:");
+			System.out.println("Node:");
 			for(int i=0; i<root.getNInstances(); i++){
 				root.getInstances().get(i).printInstance();
 			}
@@ -373,7 +465,9 @@ public class CobWebMain {
 
 	private static Instance getInstanceByName(String object, Node root) {
 		Instance I = null;
+		System.out.println(object);
 		for(int i=0; i<root.getNInstances(); i++){
+			System.out.println(root.getInstances().get(i).getName() + " - " + object);
 			if(root.getInstances().get(i).getName().equals(object)){
 				I = root.getInstances().get(i);
 			}

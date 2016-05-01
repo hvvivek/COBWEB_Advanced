@@ -7,7 +7,7 @@ public class CobWebAlgoWithConstraints {
 	ArrayList<HashMap<ArrayList<String>, String>> 	processedLabels 	= new ArrayList<HashMap<ArrayList<String>, String>>();
 	int 											levelLimit 			= 4;
 	Scanner 										reader 				= new Scanner(System.in);
-	double 											threshold 			= 0.05;
+	double 											threshold 			= 0.03;
 
 	
 	public void classifyConstrained(Instance object, Node root, Constraint constraint) {

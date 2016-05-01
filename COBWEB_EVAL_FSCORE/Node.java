@@ -32,7 +32,7 @@ public class Node {
 		this.instances = new ArrayList<Instance>();
 		this.commonAttributes = new ArrayList<Integer>();
 		//this.label = null;
-		this.id = numberOfNodes;
+		//this.id = numberOfNodes;
 		numberOfNodes++;
 		for(int i=0; i<this.nAttr; i++){
 			this.commonAttributes.add(i);
@@ -248,5 +248,15 @@ public class Node {
 			returnValue = this.getInstanceNames().get((int)Math.floor(Math.random()*this.getNInstances()));
 		}}
 		return returnValue;
+	}
+
+	public int getID() {
+		// TODO Auto-generated method stub
+		return this.id;
+	}
+
+	public void setID(int nodeID) {
+		// TODO Auto-generated method stub
+		this.id = nodeID;
 	}
 }
